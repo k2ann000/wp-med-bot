@@ -1,0 +1,8 @@
+# Bağımlılıklar
+node_modules/
+
+# WhatsApp Oturum Dosyaları (En Önemlisi!)
+.wwebjs_auth/
+
+# Çevresel Değişkenler (Gizli ID'ler vb.)
+.env
