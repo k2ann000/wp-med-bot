@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+
+const puppeteer = require('puppeteer');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const express = require('express');
@@ -15,7 +17,17 @@ app.listen(PORT, () => console.log(`Web sunucusu ${PORT} portunda başlatıldı.
 const client = new Client({
     authStrategy: new LocalAuth(), 
     puppeteer: { 
-        args: ['--no-sandbox', '--disable-setuid-sandbox'] 
+        executablePath: puppeteer.executablePath(), // İŞTE ÇÖZÜM BU SATIR!
+        args: [
+            '--no-sandbox', 
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process', 
+            '--disable-gpu'
+        ] 
     }
 });
 
@@ -44,7 +56,7 @@ cron.schedule('0 0 * * *', () => {
 // });
 
 // TEST İÇİN GEÇİCİ AYAR: Her dakika başı çalışır ('* * * * *')
-cron.schedule('* * * * *', () => {
+cron.schedule('*/10 * * * *', () => {
     if (!isAleynaReplied) {
         client.sendMessage(GRUP_ID, '💊 [TEST] Aleyna, ilacını içmeyi unutma.');
         console.log('Saat başı (test için dakika başı) kontrolü: Hatırlatma mesajı gönderildi.');
