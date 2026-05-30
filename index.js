@@ -18,7 +18,7 @@ const ALEYNA_ID = process.env.ALEYNA_ID;
 const client = new Client({
     authStrategy: new LocalAuth(), 
     puppeteer: { 
-        // executablePath satırını tamamen sildik!
+        executablePath: '/opt/render/.cache/puppeteer/chrome/linux-146.0.7680.31/chrome-linux64/chrome',
         args: [
             '--no-sandbox', 
             '--disable-setuid-sandbox',
