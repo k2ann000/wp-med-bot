@@ -17,7 +17,6 @@ app.listen(PORT, () => console.log(`Web sunucusu ${PORT} portunda başlatıldı.
 const client = new Client({
     authStrategy: new LocalAuth(), 
     puppeteer: { 
-        executablePath: puppeteer.executablePath(), // İŞTE ÇÖZÜM BU SATIR!
         args: [
             '--no-sandbox', 
             '--disable-setuid-sandbox',
