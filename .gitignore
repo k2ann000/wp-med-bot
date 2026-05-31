@@ -6,3 +6,5 @@ node_modules/
 
 # Çevresel Değişkenler (Gizli ID'ler vb.)
 .env
+
+asd.txt

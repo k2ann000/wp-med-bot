@@ -4,21 +4,20 @@ const qrcode = require('qrcode-terminal');
 const express = require('express');
 const cron = require('node-cron');
 
-// --- UYUMAMASI İÇİN WEB SUNUCUSU ---
 const app = express();
 app.get('/', (req, res) => res.send('Aleyna İlaç Botu Çalışıyor!'));
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Web sunucusu ${PORT} portunda başlatıldı.`));
 
 let isAleynaReplied = false;
+let isBotReady = false; // YENİ: Botun hazır olup olmadığını takip edecek değişken
+
 const GRUP_ID = process.env.GRUP_ID; 
 const ALEYNA_ID = process.env.ALEYNA_ID;
 
-// --- WHATSAPP İSTEMCİSİ ---
 const client = new Client({
     authStrategy: new LocalAuth(), 
     puppeteer: { 
-        executablePath: '/opt/render/.cache/puppeteer/chrome/linux-146.0.7680.31/chrome-linux64/chrome',
         args: [
             '--no-sandbox', 
             '--disable-setuid-sandbox',
@@ -39,6 +38,12 @@ cron.schedule('0 0 * * *', () => {
 });
 
 cron.schedule('*/5 * * * *', () => {
+    // YENİ: Bot hazır değilse mesaj atma, pas geç
+    if (!isBotReady) {
+        console.log('Zamanlayıcı tetiklendi ancak bot henüz QR kodu okutulup WhatsApp\'a bağlanmadığı için pas geçildi.');
+        return; 
+    }
+
     if (!isAleynaReplied) {
         client.sendMessage(GRUP_ID, '💊 [TEST] Aleyna, ilacını içmeyi unutma.');
         console.log('Hatırlatma mesajı gönderildi.');
@@ -54,6 +59,7 @@ client.on('qr', (qr) => {
 });
 
 client.on('ready', () => {
+    isBotReady = true; // YENİ: Başarıyla bağlandığında botu "Hazır" olarak işaretle
     console.log('\nHarika! Bot başarıyla WhatsApp\'a bağlandı ve çalışmaya hazır.');
 });
 
